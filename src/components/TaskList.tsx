@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import '../styles/tasklist.scss'
 
@@ -15,15 +15,46 @@ export function TaskList() {
   const [newTaskTitle, setNewTaskTitle] = useState('');
 
   function handleCreateNewTask() {
-    // Crie uma nova task com um id random, não permita criar caso o título seja vazio.
+    if (newTaskTitle.trim().length !== 0) {
+      let taskList = tasks;
+      let newTaskId = Math.floor(Math.random() * 10000000);
+      const newTask = {
+        id: newTaskId,
+        title: newTaskTitle,
+        isComplete: false,
+      }
+    taskList.push(newTask);
+    setTasks(taskList);
+    setNewTaskTitle('');
+    }
   }
 
   function handleToggleTaskCompletion(id: number) {
-    // Altere entre `true` ou `false` o campo `isComplete` de uma task com dado ID
+    let taskList = tasks;
+    const taskIndex = taskList.findIndex(task => task.id === id);
+    if (!taskList[taskIndex].isComplete) {
+      taskList[taskIndex].isComplete = true;
+    } else {
+      taskList[taskIndex].isComplete = false;
+    }
+    setTasks(taskList);
+    if (newTaskTitle === '') {
+      setNewTaskTitle('-');
+    } else {      
+      setNewTaskTitle('');
+    }
   }
 
   function handleRemoveTask(id: number) {
-    // Remova uma task da listagem pelo ID
+    let taskList = tasks;
+    const taskIndex = taskList.findIndex(task => task.id === id);
+    taskList.splice(taskIndex, 1);
+    setTasks(taskList);
+    if (newTaskTitle === '') {
+      setNewTaskTitle('-');
+    } else {      
+      setNewTaskTitle('');
+    }
   }
 
   return (
